@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -75,7 +74,7 @@ import com.ndichan.app.domain.model.MangaChapter
 @Composable
 fun MangaReaderScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToChapter: (String, String) -> Unit,
+    onNavigateToChapter: (String, String, String, String) -> Unit,
     viewModel: MangaReaderViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -165,7 +164,12 @@ fun MangaReaderScreen(
                                     .clip(RoundedCornerShape(14.dp))
                                     .background(GoldPrimary)
                                     .clickable {
-                                        onNavigateToChapter(nextCh.slug, viewModel.mangaSlug)
+                                        onNavigateToChapter(
+                                            nextCh.slug,
+                                            viewModel.mangaSlug,
+                                            viewModel.mangaTitle,
+                                            viewModel.coverUrl
+                                        )
                                     }
                                     .padding(vertical = 14.dp),
                                 horizontalArrangement = Arrangement.Center,
@@ -290,7 +294,14 @@ fun MangaReaderScreen(
                             .clip(PillShape)
                             .background(if (prevCh != null) BgCard else Color(0xFF15171C))
                             .clickable(enabled = prevCh != null) {
-                                prevCh?.let { onNavigateToChapter(it.slug, viewModel.mangaSlug) }
+                                prevCh?.let {
+                                    onNavigateToChapter(
+                                        it.slug,
+                                        viewModel.mangaSlug,
+                                        viewModel.mangaTitle,
+                                        viewModel.coverUrl
+                                    )
+                                }
                             }
                             .padding(horizontal = 12.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -316,7 +327,14 @@ fun MangaReaderScreen(
                             .clip(PillShape)
                             .background(if (nextCh != null) GoldPrimary else Color(0xFF15171C))
                             .clickable(enabled = nextCh != null) {
-                                nextCh?.let { onNavigateToChapter(it.slug, viewModel.mangaSlug) }
+                                nextCh?.let {
+                                    onNavigateToChapter(
+                                        it.slug,
+                                        viewModel.mangaSlug,
+                                        viewModel.mangaTitle,
+                                        viewModel.coverUrl
+                                    )
+                                }
                             }
                             .padding(horizontal = 14.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -376,7 +394,12 @@ fun MangaReaderScreen(
                                     .background(if (isCurrent) Color(0x33D4AF37) else BgPrimary)
                                     .clickable {
                                         viewModel.setChapterListSheetVisible(false)
-                                        onNavigateToChapter(ch.slug, viewModel.mangaSlug)
+                                        onNavigateToChapter(
+                                            ch.slug,
+                                            viewModel.mangaSlug,
+                                            viewModel.mangaTitle,
+                                            viewModel.coverUrl
+                                        )
                                     }
                                     .padding(14.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,

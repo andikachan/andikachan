@@ -1,5 +1,7 @@
 package com.ndichan.app.presentation.navigation
 
+import java.net.URLEncoder
+
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object AnimeBrowse : Screen("anime_browse")
@@ -14,7 +16,11 @@ sealed class Screen(val route: String) {
 
     object VideoPlayer : Screen("video_player/{episodeId}?animeId={animeId}&episodeTitle={episodeTitle}") {
         fun createRoute(episodeId: String, animeId: String = "", episodeTitle: String = ""): String {
-            val encodedTitle = java.net.URLEncoder.encode(episodeTitle, "UTF-8")
+            val encodedTitle = try {
+                URLEncoder.encode(episodeTitle, "UTF-8")
+            } catch (_: Exception) {
+                episodeTitle
+            }
             return "video_player/$episodeId?animeId=$animeId&episodeTitle=$encodedTitle"
         }
     }
@@ -23,7 +29,16 @@ sealed class Screen(val route: String) {
         fun createRoute(mangaSlug: String) = "manga_detail/$mangaSlug"
     }
 
-    object MangaReader : Screen("manga_reader/{chapterSlug}?mangaSlug={mangaSlug}") {
-        fun createRoute(chapterSlug: String, mangaSlug: String = "") = "manga_reader/$chapterSlug?mangaSlug=$mangaSlug"
+    object MangaReader : Screen("manga_reader/{chapterSlug}?mangaSlug={mangaSlug}&mangaTitle={mangaTitle}&coverUrl={coverUrl}") {
+        fun createRoute(
+            chapterSlug: String,
+            mangaSlug: String = "",
+            mangaTitle: String = "",
+            coverUrl: String = ""
+        ): String {
+            val encodedTitle = try { URLEncoder.encode(mangaTitle, "UTF-8") } catch (_: Exception) { "" }
+            val encodedCover = try { URLEncoder.encode(coverUrl, "UTF-8") } catch (_: Exception) { "" }
+            return "manga_reader/$chapterSlug?mangaSlug=$mangaSlug&mangaTitle=$encodedTitle&coverUrl=$encodedCover"
+        }
     }
 }

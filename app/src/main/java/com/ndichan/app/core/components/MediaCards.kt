@@ -436,17 +436,27 @@ fun QuickResumeCard(
                 .width(48.dp)
                 .height(64.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(BgPrimary)
+                .background(BgPrimary),
+            contentAlignment = Alignment.Center
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(historyItem.coverUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = historyItem.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
+            if (!historyItem.coverUrl.isNullOrBlank()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(historyItem.coverUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = historyItem.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                Icon(
+                    imageVector = if (historyItem.mediaType == MediaType.ANIME) androidx.compose.material.icons.filled.LiveTv else androidx.compose.material.icons.filled.AutoStories,
+                    contentDescription = null,
+                    tint = GoldPrimary,
+                    modifier = Modifier.size(22.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.width(12.dp))

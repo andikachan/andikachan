@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.URLDecoder
+import java.util.Locale
 import javax.inject.Inject
 
 data class MangaReaderUiState(
@@ -41,6 +43,18 @@ class MangaReaderViewModel @Inject constructor(
     var mangaSlug: String = savedStateHandle["mangaSlug"] ?: ""
         private set
 
+    var mangaTitle: String = run {
+        val raw = savedStateHandle["mangaTitle"] ?: ""
+        try { URLDecoder.decode(raw, "UTF-8") } catch (_: Exception) { raw }
+    }
+        private set
+
+    var coverUrl: String = run {
+        val raw = savedStateHandle["coverUrl"] ?: ""
+        try { URLDecoder.decode(raw, "UTF-8") } catch (_: Exception) { raw }
+    }
+        private set
+
     private val _uiState = MutableStateFlow(MangaReaderUiState())
     val uiState: StateFlow<MangaReaderUiState> = _uiState.asStateFlow()
 
@@ -56,17 +70,32 @@ class MangaReaderViewModel @Inject constructor(
                 when (res) {
                     is Resource.Success -> {
                         val d = res.data
-                        val pageCount = d?.pages?.size ?: 1
+                        val pageCount = (d?.pages?.size ?: 1).coerceAtLeast(1)
+
+                        val resolvedTitle = d?.title?.takeIf { it.isNotBlank() }
+                            ?: mangaTitle.takeIf { it.isNotBlank() }
+                            ?: (d?.slugManga ?: mangaSlug).replace("-", " ")
+                                .split(" ")
+                                .joinToString(" ") { it.replaceFirstChar { char -> char.titlecase(Locale.getDefault()) } }
+
+                        val resolvedChapterTitle = d?.chapterTitle?.takeIf { it.isNotBlank() }
+                            ?: if (!d?.chapterNum.isNullOrBlank()) "Chapter ${d?.chapterNum}" else "Chapter"
+
+                        val resolvedReading = d?.copy(
+                            title = resolvedTitle,
+                            chapterTitle = resolvedChapterTitle
+                        )
+
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                readingData = d,
+                                readingData = resolvedReading,
                                 totalPages = pageCount,
                                 currentPageIndex = 1,
                                 errorMessage = null
                             )
                         }
-                        saveHistory(1, pageCount)
+                        saveHistory(1, pageCount, resolvedReading)
                     }
                     is Resource.Error -> {
                         _uiState.update {
@@ -90,8 +119,9 @@ class MangaReaderViewModel @Inject constructor(
 
     fun updateCurrentPage(index: Int) {
         val total = _uiState.value.totalPages
-        _uiState.update { it.copy(currentPageIndex = index.coerceIn(1, total)) }
-        saveHistory(index, total)
+        val page = index.coerceIn(1, total)
+        _uiState.update { it.copy(currentPageIndex = page) }
+        saveHistory(page, total, _uiState.value.readingData)
     }
 
     fun setChapterListSheetVisible(visible: Boolean) {
@@ -118,16 +148,26 @@ class MangaReaderViewModel @Inject constructor(
         return null
     }
 
-    private fun saveHistory(page: Int, totalPages: Int) {
-        val data = _uiState.value.readingData ?: return
+    private fun saveHistory(page: Int, totalPages: Int, reading: MangaReading?) {
+        val data = reading ?: _uiState.value.readingData ?: return
+        val targetSlug = mangaSlug.ifBlank { data.mangaSlug.ifBlank { chapterSlug.substringBefore("-chapter-") } }
+        val displayTitle = data.title.ifBlank {
+            mangaTitle.ifBlank {
+                targetSlug.replace("-", " ")
+                    .split(" ")
+                    .joinToString(" ") { it.replaceFirstChar { char -> char.titlecase(Locale.getDefault()) } }
+            }
+        }
+        val displayChapter = data.chapterTitle.ifBlank { "Chapter ${data.chapterNum}" }
+
         viewModelScope.launch {
             libraryRepository.saveHistory(
                 HistoryItem(
-                    id = mangaSlug.ifBlank { data.mangaSlug },
+                    id = targetSlug,
                     mediaType = MediaType.MANGA,
-                    title = data.title,
-                    coverUrl = null,
-                    lastItemTitle = data.chapterTitle,
+                    title = displayTitle,
+                    coverUrl = coverUrl.ifBlank { null },
+                    lastItemTitle = displayChapter,
                     lastItemId = chapterSlug,
                     progress = page.toLong(),
                     totalProgress = totalPages.toLong(),

@@ -4,9 +4,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -99,9 +97,9 @@ fun NDiChanNavGraph(
                             Screen.VideoPlayer.createRoute(episodeId, animeId, episodeTitle)
                         )
                     },
-                    onNavigateToMangaReader = { chapterSlug, mangaSlug ->
+                    onNavigateToMangaReader = { chapterSlug, mangaSlug, mangaTitle, coverUrl ->
                         navController.navigate(
-                            Screen.MangaReader.createRoute(chapterSlug, mangaSlug)
+                            Screen.MangaReader.createRoute(chapterSlug, mangaSlug, mangaTitle, coverUrl)
                         )
                     },
                     onNavigateToSearch = {
@@ -154,9 +152,9 @@ fun NDiChanNavGraph(
                             Screen.VideoPlayer.createRoute(episodeId, animeId, episodeTitle)
                         )
                     },
-                    onNavigateToMangaReader = { chapterSlug, mangaSlug ->
+                    onNavigateToMangaReader = { chapterSlug, mangaSlug, mangaTitle, coverUrl ->
                         navController.navigate(
-                            Screen.MangaReader.createRoute(chapterSlug, mangaSlug)
+                            Screen.MangaReader.createRoute(chapterSlug, mangaSlug, mangaTitle, coverUrl)
                         )
                     }
                 )
@@ -233,9 +231,9 @@ fun NDiChanNavGraph(
             ) {
                 MangaDetailScreen(
                     onNavigateBack = { navController.popBackStack() },
-                    onNavigateToReader = { chapterSlug, mangaSlug ->
+                    onNavigateToReader = { chapterSlug, mangaSlug, mangaTitle, coverUrl ->
                         navController.navigate(
-                            Screen.MangaReader.createRoute(chapterSlug, mangaSlug)
+                            Screen.MangaReader.createRoute(chapterSlug, mangaSlug, mangaTitle, coverUrl)
                         )
                     },
                     onNavigateToOtherManga = { slug ->
@@ -252,14 +250,22 @@ fun NDiChanNavGraph(
                     navArgument("mangaSlug") {
                         type = NavType.StringType
                         defaultValue = ""
+                    },
+                    navArgument("mangaTitle") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                    navArgument("coverUrl") {
+                        type = NavType.StringType
+                        defaultValue = ""
                     }
                 )
             ) {
                 MangaReaderScreen(
                     onNavigateBack = { navController.popBackStack() },
-                    onNavigateToChapter = { nextChapterSlug, mangaSlug ->
+                    onNavigateToChapter = { nextChapterSlug, mangaSlug, title, cover ->
                         navController.navigate(
-                            Screen.MangaReader.createRoute(nextChapterSlug, mangaSlug)
+                            Screen.MangaReader.createRoute(nextChapterSlug, mangaSlug, title, cover)
                         ) {
                             popUpTo(Screen.MangaReader.route) { inclusive = true }
                         }

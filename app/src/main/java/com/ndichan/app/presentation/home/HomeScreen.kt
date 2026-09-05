@@ -1,6 +1,8 @@
 package com.ndichan.app.presentation.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
@@ -33,10 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ndichan.app.R
 import com.ndichan.app.core.components.AnimeCard
 import com.ndichan.app.core.components.ErrorView
 import com.ndichan.app.core.components.HeroBanner
@@ -57,7 +63,7 @@ fun HomeScreen(
     onNavigateToAnimeDetail: (String) -> Unit,
     onNavigateToMangaDetail: (String) -> Unit,
     onNavigateToVideoPlayer: (String, String, String) -> Unit,
-    onNavigateToMangaReader: (String, String) -> Unit,
+    onNavigateToMangaReader: (String, String, String, String) -> Unit,
     onNavigateToSearch: () -> Unit,
     onNavigateToAnimeBrowse: () -> Unit,
     onNavigateToMangaBrowse: () -> Unit,
@@ -106,7 +112,7 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
-                // Top App Bar / Brand Header
+                // Top App Bar / Brand Header with Logo
                 item {
                     Row(
                         modifier = Modifier
@@ -116,19 +122,37 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
-                            Text(
-                                text = "NDiChan",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = GoldPrimary,
-                                letterSpacing = (-0.5).sp
-                            )
-                            Text(
-                                text = "Streaming & Baca Komik Premium",
-                                fontSize = 11.sp,
-                                color = TextMuted
-                            )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(42.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .border(1.5.dp, GoldPrimary, RoundedCornerShape(12.dp))
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.app_logo),
+                                    contentDescription = "NDiChan Logo",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Column {
+                                Text(
+                                    text = "NDiChan",
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = GoldPrimary,
+                                    letterSpacing = (-0.5).sp
+                                )
+                                Text(
+                                    text = "Streaming & Baca Komik Premium",
+                                    fontSize = 11.sp,
+                                    color = TextMuted
+                                )
+                            }
                         }
 
                         IconButton(
@@ -165,7 +189,9 @@ fun HomeScreen(
                                     } else {
                                         onNavigateToMangaReader(
                                             latestHistory.lastItemId,
-                                            latestHistory.id
+                                            latestHistory.id,
+                                            latestHistory.title,
+                                            latestHistory.coverUrl ?: ""
                                         )
                                     }
                                 }

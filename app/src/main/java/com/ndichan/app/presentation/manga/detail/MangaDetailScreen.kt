@@ -76,7 +76,7 @@ import com.ndichan.app.domain.model.MangaChapter
 @Composable
 fun MangaDetailScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToReader: (String, String) -> Unit,
+    onNavigateToReader: (String, String, String, String) -> Unit,
     onNavigateToOtherManga: (String) -> Unit,
     viewModel: MangaDetailViewModel = hiltViewModel()
 ) {
@@ -277,7 +277,7 @@ fun MangaDetailScreen(
                                 .clip(RoundedCornerShape(14.dp))
                                 .background(GoldPrimary)
                                 .clickable {
-                                    onNavigateToReader(firstChapter.slug, detail.slug)
+                                    onNavigateToReader(firstChapter.slug, detail.slug, detail.title, detail.coverUrl ?: "")
                                 }
                                 .padding(vertical = 14.dp),
                             horizontalArrangement = Arrangement.Center,
@@ -461,7 +461,7 @@ fun MangaDetailScreen(
                         ChapterRowItem(
                             chapter = chapter,
                             onClick = {
-                                onNavigateToReader(chapter.slug, detail.slug)
+                                onNavigateToReader(chapter.slug, detail.slug, detail.title, detail.coverUrl ?: "")
                             }
                         )
                     }

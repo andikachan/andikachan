@@ -3,7 +3,6 @@ package com.ndichan.app.presentation.library
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.LiveTv
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material3.Icon
@@ -68,7 +70,7 @@ fun LibraryScreen(
     onNavigateToAnimeDetail: (String) -> Unit,
     onNavigateToMangaDetail: (String) -> Unit,
     onNavigateToVideoPlayer: (String, String, String) -> Unit,
-    onNavigateToMangaReader: (String, String) -> Unit,
+    onNavigateToMangaReader: (String, String, String, String) -> Unit,
     viewModel: LibraryViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -213,7 +215,12 @@ fun LibraryScreen(
                                     if (item.mediaType == MediaType.ANIME) {
                                         onNavigateToVideoPlayer(item.lastItemId, item.id, item.lastItemTitle)
                                     } else {
-                                        onNavigateToMangaReader(item.lastItemId, item.id)
+                                        onNavigateToMangaReader(
+                                            item.lastItemId,
+                                            item.id,
+                                            item.title,
+                                            item.coverUrl ?: ""
+                                        )
                                     }
                                 }
                             )
@@ -246,17 +253,27 @@ private fun BookmarkRowItem(
                 .width(52.dp)
                 .aspectRatio(2f / 3f)
                 .clip(RoundedCornerShape(8.dp))
-                .background(BgPrimary)
+                .background(BgPrimary),
+            contentAlignment = Alignment.Center
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.coverUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = item.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
+            if (!item.coverUrl.isNullOrBlank()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(item.coverUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = item.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                Icon(
+                    imageVector = if (item.mediaType == MediaType.ANIME) Icons.Default.LiveTv else Icons.Default.AutoStories,
+                    contentDescription = null,
+                    tint = GoldPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -330,17 +347,27 @@ private fun HistoryRowItem(
                 .width(52.dp)
                 .aspectRatio(2f / 3f)
                 .clip(RoundedCornerShape(8.dp))
-                .background(BgPrimary)
+                .background(BgPrimary),
+            contentAlignment = Alignment.Center
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.coverUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = item.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
+            if (!item.coverUrl.isNullOrBlank()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(item.coverUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = item.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                Icon(
+                    imageVector = if (item.mediaType == MediaType.ANIME) Icons.Default.LiveTv else Icons.Default.AutoStories,
+                    contentDescription = null,
+                    tint = GoldPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.width(12.dp))
