@@ -74,7 +74,7 @@ class MangaReaderViewModel @Inject constructor(
 
                         val resolvedTitle = d?.title?.takeIf { it.isNotBlank() }
                             ?: mangaTitle.takeIf { it.isNotBlank() }
-                            ?: (d?.slugManga ?: mangaSlug).replace("-", " ")
+                            ?: (d?.mangaSlug ?: mangaSlug).replace("-", " ")
                                 .split(" ")
                                 .joinToString(" ") { it.replaceFirstChar { char -> char.titlecase(Locale.getDefault()) } }
 

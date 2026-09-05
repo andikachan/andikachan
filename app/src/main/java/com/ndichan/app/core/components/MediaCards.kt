@@ -451,10 +451,10 @@ fun QuickResumeCard(
                 )
             } else {
                 Icon(
-                    imageVector = if (historyItem.mediaType == MediaType.ANIME) androidx.compose.material.icons.filled.LiveTv else androidx.compose.material.icons.filled.AutoStories,
+                    imageVector = if (historyItem.mediaType == MediaType.ANIME) Icons.Filled.PlayArrow else Icons.AutoMirrored.Filled.ArrowForwardIos,
                     contentDescription = null,
                     tint = GoldPrimary,
-                    modifier = Modifier.size(22.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
