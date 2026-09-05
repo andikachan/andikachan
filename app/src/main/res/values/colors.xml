@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_primary">#0D0E11</color>
+    <color name="bg_secondary">#16181D</color>
+    <color name="bg_tertiary">#1F222A</color>
+    <color name="bg_card">#181A20</color>
+    
+    <color name="gold_primary">#D4AF37</color>
+    <color name="gold_light">#E5C158</color>
+    <color name="gold_dark">#997D24</color>
+    <color name="gold_muted">#5A4C22</color>
+
+    <color name="text_primary">#F4F4F6</color>
+    <color name="text_secondary">#9E9EA7</color>
+    <color name="text_muted">#63636E</color>
+
+    <color name="divider_subtle">#1F2128</color>
+    <color name="glass_border">#2A2D37</color>
+</resources>
