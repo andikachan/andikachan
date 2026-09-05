@@ -211,7 +211,8 @@ fun HomeScreen(
                                     Box(
                                         modifier = Modifier
                                             .padding(3.dp)
-                                            .size(if (isSelected) 16.dp to 4.dp else 4.dp to 4.dp)
+                                            .width(if (isSelected) 16.dp else 4.dp)
+                                            .height(4.dp)
                                             .clip(PillShape)
                                             .background(if (isSelected) GoldPrimary else Color(0xFF252832))
                                     )

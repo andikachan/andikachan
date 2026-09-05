@@ -40,11 +40,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ndichan.app.core.theme.BgPrimary
 import com.ndichan.app.core.theme.BorderSubtle
 import com.ndichan.app.core.theme.GoldPrimary
 import com.ndichan.app.core.theme.TextMuted
-import com.ndichan.app.core.theme.TextSecondary
 import com.ndichan.app.presentation.navigation.Screen
 
 sealed class BottomNavItem(
@@ -147,7 +145,7 @@ fun NDiChanBottomBar(
                             }
                         }
                         .padding(horizontal = 10.dp, vertical = 6.dp),
-                    horizontalAlignment = Alignment.CenterVertically,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Icon(
