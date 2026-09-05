@@ -1,5 +1,7 @@
 package com.ndichan.app.core.common
 
+import java.net.URLEncoder
+
 object Constants {
     const val BASE_URL = "https://api.ndikacunk.my.id/"
     const val DATABASE_NAME = "ndichan_database"
@@ -16,4 +18,27 @@ object Constants {
     const val DEFAULT_MANGA_LIMIT = 20
     const val POPULAR_MANGA_LIMIT = 15
     const val LATEST_MANGA_LIMIT = 24
+
+    fun formatAnimeImageUrl(rawUrl: String?): String? {
+        if (rawUrl.isNullOrBlank()) return null
+        val fullUrl = when {
+            rawUrl.startsWith("http://") || rawUrl.startsWith("https://") -> rawUrl
+            rawUrl.startsWith("/") -> "https://xyz-api.animein.net$rawUrl"
+            else -> "https://xyz-api.animein.net/$rawUrl"
+        }
+        return try {
+            "https://cfelainawanggy.pages.dev/?action=proxy&url=" + URLEncoder.encode(fullUrl, "UTF-8")
+        } catch (_: Exception) {
+            "https://cfelainawanggy.pages.dev/?action=proxy&url=" + fullUrl
+        }
+    }
+
+    fun formatAnimeStreamUrl(rawUrl: String?): String {
+        if (rawUrl.isNullOrBlank()) return ""
+        return try {
+            "https://cfelainawanggy.pages.dev/?action=stream&url=" + URLEncoder.encode(rawUrl, "UTF-8")
+        } catch (_: Exception) {
+            "https://cfelainawanggy.pages.dev/?action=stream&url=" + rawUrl
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.ndichan.app.data.remote.dto
 
+import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 
 data class AnimeBaseResponse<T>(
@@ -34,7 +35,7 @@ data class MovieDto(
     @SerializedName("status") val status: String? = null,
     @SerializedName("favorites") val favorites: String? = null,
     @SerializedName("views") val views: String? = null,
-    @SerializedName("genre") val genre: String? = null,
+    @SerializedName("genre") val genre: JsonElement? = null,
     @SerializedName("aired_start") val airedStart: String? = null,
     @SerializedName("time") val time: String? = null,
     @SerializedName("key_time") val keyTime: String? = null,
@@ -45,6 +46,9 @@ data class MovieDto(
 ) {
     val displayPoster: String?
         get() = imagePoster ?: imageCover ?: imageCoverAlt
+
+    val displayGenre: String?
+        get() = genre.toGenreString()
 }
 
 data class AnimeDetailDto(
@@ -64,11 +68,14 @@ data class AnimeDetailDto(
     @SerializedName("aired_start") val airedStart: String? = null,
     @SerializedName("aired_end") val airedEnd: String? = null,
     @SerializedName("key_status") val keyStatus: String? = null,
-    @SerializedName("genre") val genre: String? = null,
+    @SerializedName("genre") val genre: JsonElement? = null,
     @SerializedName("is_fav") val isFav: String? = null,
     @SerializedName("episode_list_complete") val episodeListComplete: Boolean? = null,
     @SerializedName("episode_list") val episodeList: List<EpisodeItemDto>? = null
-)
+) {
+    val displayGenre: String?
+        get() = genre.toGenreString()
+}
 
 data class EpisodeItemDto(
     @SerializedName("id") val id: String,

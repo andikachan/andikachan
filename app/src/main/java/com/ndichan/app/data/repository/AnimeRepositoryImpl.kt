@@ -1,5 +1,6 @@
 package com.ndichan.app.data.repository
 
+import com.ndichan.app.core.common.Constants
 import com.ndichan.app.core.common.Resource
 import com.ndichan.app.data.remote.api.AnimeApiService
 import com.ndichan.app.data.remote.dto.MovieDto
@@ -28,15 +29,15 @@ class AnimeRepositoryImpl @Inject constructor(
             id = id,
             title = title,
             synopsis = synopsis ?: "",
-            posterUrl = displayPoster,
-            coverUrl = imageCover ?: imageCoverAlt ?: imagePoster,
+            posterUrl = Constants.formatAnimeImageUrl(displayPoster),
+            coverUrl = Constants.formatAnimeImageUrl(imageCover ?: imageCoverAlt ?: imagePoster),
             type = type,
             year = year,
             day = day,
             status = status,
             views = views,
             favorites = favorites,
-            genre = genre,
+            genre = displayGenre,
             latestEpisode = episode,
             latestEpisodeTitle = episodeTitle,
             latestEpisodeId = episodeId
@@ -158,7 +159,7 @@ class AnimeRepositoryImpl @Inject constructor(
                         views = ep.views,
                         movieId = ep.idMovie ?: d.id,
                         releaseDate = ep.keyTime,
-                        imageUrl = ep.image,
+                        imageUrl = Constants.formatAnimeImageUrl(ep.image),
                         isNew = ep.isNew == "1"
                     )
                 }
@@ -168,8 +169,8 @@ class AnimeRepositoryImpl @Inject constructor(
                     title = d.title,
                     synopsis = d.synopsis ?: "",
                     synonyms = d.synonyms,
-                    posterUrl = d.imagePoster,
-                    coverUrl = d.imageCover ?: d.imagePoster,
+                    posterUrl = Constants.formatAnimeImageUrl(d.imagePoster),
+                    coverUrl = Constants.formatAnimeImageUrl(d.imageCover ?: d.imagePoster),
                     type = d.type,
                     year = d.year,
                     day = d.day,
@@ -179,7 +180,7 @@ class AnimeRepositoryImpl @Inject constructor(
                     studio = d.studio,
                     airedStart = d.airedStart,
                     airedEnd = d.airedEnd,
-                    genre = d.genre,
+                    genre = d.displayGenre,
                     isFavorite = d.isFav == "1",
                     episodes = episodes
                 )
@@ -205,14 +206,14 @@ class AnimeRepositoryImpl @Inject constructor(
                     views = d.episode?.views,
                     movieId = d.episode?.idMovie,
                     releaseDate = d.episode?.keyTime,
-                    imageUrl = d.episode?.image,
+                    imageUrl = Constants.formatAnimeImageUrl(d.episode?.image),
                     isNew = false
                 )
 
                 val servers = (d.server ?: emptyList()).map { s ->
                     StreamServer(
                         id = s.id,
-                        link = s.link,
+                        link = Constants.formatAnimeStreamUrl(s.link),
                         quality = s.quality ?: "Auto",
                         name = s.name ?: "Default Server",
                         type = s.type ?: "direct"
@@ -227,7 +228,7 @@ class AnimeRepositoryImpl @Inject constructor(
                         views = n.views,
                         movieId = n.idMovie,
                         releaseDate = n.keyTime,
-                        imageUrl = n.image,
+                        imageUrl = Constants.formatAnimeImageUrl(n.image),
                         isNew = false
                     )
                 }
