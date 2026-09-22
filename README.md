@@ -71,3 +71,4 @@ Aplikasi Android modern dan elegan untuk streaming video anime dan membaca komik
    ./gradlew assembleDebug
    ```
    File APK output akan berada di: `app/build/outputs/apk/debug/app-debug.apk`.
+   adb shell /data/app/~~iGfORb0EucrAce5eAbqh8w==/moe.shizuku.privileged.api-ciROeWJaBMcri5NjrE0d1w==/lib/arm64/libshizuku.so
